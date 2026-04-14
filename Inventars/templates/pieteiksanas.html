@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 400px; margin: 100px auto; text-align: center;">
+    <div class="card">
+        <i data-lucide="lock" style="color: var(--primary); width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+        <h2>Pieteikšanās</h2>
+        <form action="/pieteiksanas" method="POST" style="margin-top: 1.5rem;">
+            <div style="margin-bottom: 1rem; text-align: left;">
+                <label style="display: block; margin-bottom: 0.5rem;">Lietotājvārds</label>
+                <input type="text" name="lietotajs" style="width: 100%; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 8px;" required>
+            </div>
+            <div style="margin-bottom: 1.5rem; text-align: left;">
+                <label style="display: block; margin-bottom: 0.5rem;">Parole</label>
+                <input type="password" name="parole" style="width: 100%; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 8px;" required>
+            </div>
+            <button type="submit" class="btn" style="width: 100%; justify-content: center;">Ieiet sistēmā</button>
+        </form>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">Neesi reģistrējies? <a href="/registreties" style="color: var(--primary);">Izveidot kontu</a></p>
+    </div>
+</div>
+{% endblock %}

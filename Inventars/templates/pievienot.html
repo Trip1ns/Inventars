@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h1>Pievienot jaunu inventāru</h1>
+    <div class="card" style="margin-top: 1.5rem;">
+        <form action="/pievienot" method="POST">
+            <div style="margin-bottom: 1rem;">
+                <label>Veids (Kategorija)</label>
+                <input type="text" name="veids" placeholder="Piemēram: Dators" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" required>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label>Nosaukums</label>
+                <input type="text" name="nosaukums" placeholder="Piemēram: MacBook Air" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label>Kopējais skaits</label>
+                    <input type="number" name="kopejais_skaits" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" required>
+                </div>
+                <div>
+                    <label>Pieejamais skaits</label>
+                    <input type="number" name="pieejamais_skaits" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" required>
+                </div>
+            </div>
+            <button type="submit" class="btn">Saglabāt datubāzē</button>
+            <a href="/inventars" style="margin-left: 1rem; color: var(--secondary); text-decoration: none;">Atcelt</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
