@@ -5,6 +5,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = "loti_slepeni_123"
 
+def dabut_db():
+    conn = sqlite3.connect('projekts.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 @app.route('/')
 def base():
@@ -18,6 +22,7 @@ def pieteiksanas():
         lietotajvards = request.form.get('lietotajs')
         parole = request.form.get('parole')
 
+        db = dabut_db()
         lietotajs = db.execute("SELECT * FROM lietotaji WHERE lietotajvards = ?", (lietotajvards,)).fetchone()
         db.close()
 
@@ -39,12 +44,13 @@ def registreties():
         parole_hash = generate_password_hash(parole)
         loma = 'klients' 
 
+        db = dabut_db() 
         db.execute("INSERT INTO lietotaji (lietotajvards, parole, loma) VALUES (?, ?, ?)", 
                    (lietotajs, parole_hash, loma))
         db.commit()
         db.close()
         return redirect(url_for('pieteiksanas'))
-    return render_template("registreties.html")
+    return render_template("registreties.html") 
 
 @app.route("/inventars")
 def inventars():

@@ -123,19 +123,16 @@
             Inventārs
         </a>
         <ul class="nav-links">
-            {% if session.get('user_id') %}
-                <li><a href="/inventars">Inventārs</a></li>
+            {% if session.get('lietotajs_id') %} <li><a href="/inventars">Inventārs</a></li>
                 {% if session.get('loma') == 'admin' %}
                     <li><a href="/pievienot">Pievienot</a></li>
-                {% else %}
-                    <li><a href="/dashboard">Mans Inventārs</a></li>
                 {% endif %}
-                <li><a href="/atslegties">Atslēgties</a></li>
-            {% else %}
-                <li><a href="/pieteikties">Reģistrēties</a></li>
-                <li><a href="/">Ielogoties</a></li>
-            {% endif %}
-        </ul>
+                <li><a href="/atslegties">Atslēgties ({{ session.get('lietotajvards') }})</a></li>
+        {% else %}
+            <li><a href="/registreties">Reģistrēties</a></li>
+            <li><a href="/pieteiksanas">Autorizēties</a></li>
+    {% endif %}
+</ul>
     </nav>
 
     <div class="container">

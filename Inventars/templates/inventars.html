@@ -20,18 +20,18 @@
             </tr>
         </thead>
         <tbody>
-            {% for lieta in inventars %}
+            {% for i in inventars %}
             <tr style="border-bottom: 1px solid var(--bg);">
-                <td style="padding: 1rem;">{{ lieta['veids'] }}</td>
-                <td style="padding: 1rem;"><strong>{{ lieta['nosaukums'] }}</strong></td>
-                <td style="padding: 1rem;">{{ lieta['kopejais_skaits'] }}</td>
+                <td style="padding: 1rem;">{{ i['veids'] }}</td>
+                <td style="padding: 1rem;"><strong>{{ i['nosaukums'] }}</strong></td>
+                <td style="padding: 1rem;">{{ i['kopejais_skaits'] }}</td>
                 <td style="padding: 1rem;">
-                    <span style="color: {{ 'var(--success)' if lieta['pieejamais_skaits'] > 0 else 'var(--secondary)' }}">
-                        {{ lieta['pieejamais_skaits'] }}
+                    <span style="color: {{ 'var(--success)' if i['pieejamais_skaits'] > 0 else 'var(--secondary)' }}">
+                        {{ i['pieejamais_skaits'] }}
                     </span>
                 </td>
                 <td style="padding: 1rem;">
-                    {% if lieta['pieejamais_skaits'] > 0 %}
+                    {% if i['pieejamais_skaits'] > 0 %}
                         <a href="#" class="btn" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Rezervēt</a>
                     {% else %}
                         <span style="font-size: 0.8rem; color: #94A3B8;">Nav pieejams</span>
