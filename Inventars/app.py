@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, url_for, redirect, session   
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.secret_key = "loti_slepeni_123"
@@ -92,6 +94,51 @@ def pievienot():
 def atslegties():
     session.clear()
     return redirect(url_for('pieteiksanas'))
+
+
+@app.route('/rezervet/<int:id>')
+def rezervet(id):
+    if 'lietotajs_id' not in session:
+        return redirect(url_for('pieteiksanas'))
+    
+    db = dabut_db()
+    inventars = db.execute("SELECT * FROM inventars WHERE ID = ?", (id,)).fetchone()
+    
+    if inventars and inventars['pieejamais_skaits'] > 0:
+        db.execute("UPDATE inventars SET pieejamais_skaits = pieejamais_skaits - 1 WHERE ID = ?", (id,))
+        
+        sodien = datetime.now().strftime('%Y-%m-%d')
+        db.execute("INSERT INTO izsniegtais (lietotajs_ID, inventars_ID, datums_izsniegts) VALUES (?, ?, ?)",
+                   (session['lietotajs_id'], id, sodien))
+        
+        db.commit()
+    
+    db.close()
+    return redirect(url_for('inventars'))
+
+@app.route('/mans_inventars')
+def mans_inventars():
+    if 'lietotajs_id' not in session:
+        return redirect(url_for('pieteiksanas'))
+    
+    db = dabut_db()
+    mans_saraksts = db.execute("""
+        SELECT izsniegtais.ID, inventars.nosaukums, izsniegtais.datums_izsniegts 
+        FROM izsniegtais 
+        JOIN inventars ON izsniegtais.inventars_ID = inventars.ID 
+        WHERE izsniegtais.lietotajs_ID = ?
+    """, (session['lietotajs_id'],)).fetchall()
+    
+    db.close()
+    return render_template('mans_inventars.html', saraksts=mans_saraksts)
+
+@app.route('/atdot_inventaru'):
+def atdot_inventaru():
+    if 'if_lietotajs_id' not in session:
+        return redirect(url_for('pieteiksanas'))
+
+    db = dabut_db()
+    
 
 if __name__ == "__main__":
     app.run(debug=True)

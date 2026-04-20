@@ -30,11 +30,11 @@
                         {{ i['pieejamais_skaits'] }}
                     </span>
                 </td>
-                <td style="padding: 1rem;">
-                    {% if i['pieejamais_skaits'] > 0 %}
-                        <a href="#" class="btn" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Rezervēt</a>
-                    {% else %}
-                        <span style="font-size: 0.8rem; color: #94A3B8;">Nav pieejams</span>
+                    <td style="padding: 1rem;">
+                        {% if i['pieejamais_skaits'] > 0 %}
+                        <a href="{{ url_for('rezervet', id=i['ID']) }}" class="btn" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Rezervēt</a>
+                        {% else %}
+                    <span style="font-size: 0.8rem; color: #94A3B8;">Nav pieejams</span>
                     {% endif %}
                 </td>
             </tr>

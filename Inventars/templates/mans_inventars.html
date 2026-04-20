@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Mans paņemtais inventārs</h1>
+
+<div class="card" style="margin-top: 2rem;">
+    {% if saraksts %}
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--bg); text-align: left;">
+                <th style="padding: 1rem;">Nosaukums</th>
+                <th style="padding: 1rem;">Saņemšanas datums</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ieraksts in saraksts %}
+            <tr style="border-bottom: 1px solid var(--bg);">
+                <td style="padding: 1rem;">{{ ieraksts['nosaukums'] }}</td>
+                <td style="padding: 1rem;">{{ ieraksts['datums_izsniegts'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="padding: 1rem; color: var(--secondary);">Tev pašlaik nav neviena rezervēta priekšmeta.</p>
+    {% endif %}
+</div>
+{% endblock %}
