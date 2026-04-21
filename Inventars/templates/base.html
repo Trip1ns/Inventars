@@ -127,11 +127,11 @@
                 {% if session.get('loma') == 'admin' %}
                     <li><a href="/pievienot">Pievienot</a></li>
                     <li><a href="/izsniegtais_inventars">Izsniegtais inventārs</a></li>
-                    <li><a href="/dzest">Dzēst inventāru</a></li>
+                    <li><a href="/dzest_saraksts">Dzēst inventāru</a></li>
                 {% endif %}
                 {% if session.get('loma') == 'klients' %}
                 <li><a href="/mans_inventars">Mans Inventārs</a></li>
-                <li><a href="/atdot">Atdot inventāru</a></li>
+                <li><a href="/atdot_inventaru">Atdot inventāru</a></li>
                 {% endif %}
                 <li><a href="/atslegties">Atslēgties ({{ session.get('lietotajvards') }})</a></li>
         {% else %}

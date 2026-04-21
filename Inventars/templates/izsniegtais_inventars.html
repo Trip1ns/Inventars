@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Viss izsniegtais inventārs</h1>
+    <span class="card" style="padding: 0.5rem 1rem; background-color: var(--primary); color: white; border-radius: 20px; font-size: 0.9rem;">
+        Admin skats
+    </span>
+</div>
+
+<div class="card" style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--bg); text-align: left;">
+                <th style="padding: 1rem;">Lietotājs</th>
+                <th style="padding: 1rem;">Inventāra nosaukums</th>
+                <th style="padding: 1rem;">Kategorija</th>
+                <th style="padding: 1rem;">Izsniegšanas datums</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if saraksts %}
+                {% for ieraksts in saraksts %}
+                <tr style="border-bottom: 1px solid var(--bg);">
+                    <td style="padding: 1rem;"><strong>{{ ieraksts['lietotajvards'] }}</strong></td>
+                    <td style="padding: 1rem;">{{ ieraksts['nosaukums'] }}</td>
+                    <td style="padding: 1rem;">{{ ieraksts['veids'] }}</td>
+                    <td style="padding: 1rem;">{{ ieraksts['datums_izsniegts'] }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" style="padding: 2rem; text-align: center; color: var(--secondary);">
+                        Pašlaik nekas nav izsniegts.
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

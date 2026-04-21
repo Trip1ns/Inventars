@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, session   
+from flask import Flask, render_template, request, url_for, redirect, session, flash
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -78,8 +78,20 @@ def pievienot():
     if request.method == 'POST':
         veids = request.form.get('veids')
         nosaukums = request.form.get('nosaukums')
-        kopejais = request.form.get('kopejais_skaits')
-        pieejamais = request.form.get('pieejamais_skaits')
+        try:
+            kopejais = int(request.form.get('kopejais_skaits'))
+            pieejamais = int(request.form.get('pieejamais_skaits'))
+        except (ValueError, TypeError):
+            flash("Kļūda - ievadiet naturālus un pozitīvus skaitļus") 
+            return "Kļūda - ievadiet naturālus un pozitīvus skaitļus"
+
+        if kopejais < 1 or pieejamais < 0:
+            flash("Kļūda - ievadiet naturālus un pozitīvus skaitļus")
+            return  "Kļūda - ievadiet naturālus un pozitīvus skaitļus"
+
+        if pieejamais > kopejais:
+            flash("Kļūda - pieejamais skaits ir lielāks par kopējo skaitu")
+            return "Kļūda - pieejamais skaits ir lielāks par kopējo skaitu"
 
         db = dabut_db()
         db.execute("INSERT INTO inventars (veids, nosaukums, kopejais_skaits, pieejamais_skaits) VALUES (?, ?, ?, ?)",
@@ -132,13 +144,82 @@ def mans_inventars():
     db.close()
     return render_template('mans_inventars.html', saraksts=mans_saraksts)
 
-@app.route('/atdot_inventaru'):
+@app.route('/atdot_inventaru')
 def atdot_inventaru():
-    if 'if_lietotajs_id' not in session:
+    if 'lietotajs_id' not in session:
         return redirect(url_for('pieteiksanas'))
-
-    db = dabut_db()
     
+    db = dabut_db()
+    mans_saraksts = db.execute("""
+        SELECT izsniegtais.ID, inventars.nosaukums, izsniegtais.datums_izsniegts 
+        FROM izsniegtais 
+        JOIN inventars ON izsniegtais.inventars_ID = inventars.ID 
+        WHERE izsniegtais.lietotajs_ID = ?
+    """, (session['lietotajs_id'],)).fetchall()
+    
+    db.close()
+    return render_template('atdot.html', saraksts=mans_saraksts)
+
+@app.route('/izpildit_atdosanu/<int:ieraksta_id>')
+def izpildit_atdosanu(ieraksta_id):
+    if 'lietotajs_id' not in session:
+        return redirect(url_for('pieteiksanas'))
+    
+    db = dabut_db()
+    ieraksts = db.execute("SELECT inventars_ID FROM izsniegtais WHERE ID = ?", (ieraksta_id,)).fetchone()
+    
+    if ieraksts:
+        inv_id = ieraksts['inventars_ID']
+        db.execute("UPDATE inventars SET pieejamais_skaits = pieejamais_skaits + 1 WHERE ID = ?", (inv_id,))
+        db.execute("DELETE FROM izsniegtais WHERE ID = ?", (ieraksta_id,))
+        db.commit()
+    
+    db.close()
+    return redirect(url_for('atdot_inventaru'))    
+
+@app.route('/dzest_saraksts')
+def dzest_saraksts():
+    if session.get('loma') != 'admin':
+        return "Piekļuve liegta!"
+    
+    db = dabut_db()
+    visi_dati = db.execute("SELECT * FROM inventars").fetchall()
+    db.close()
+    # Nododam datus uz dzest.html
+    return render_template('dzest.html', inventars=visi_dati)
+
+@app.route('/dzest/<int:id>')
+def dzest(id):
+    if session.get('loma') != 'admin':
+        return "Piekļuve liegta!"
+    
+    db = dabut_db()
+    db.execute("DELETE FROM inventars WHERE ID = ?", (id,))
+    db.commit()
+    db.close()
+    
+    return redirect(url_for('dzest_saraksts'))
+
+@app.route('/izsniegtais_inventars')
+def izsniegtais_inventars():
+    if session.get('loma') != 'admin':
+        return "Piekļuve liegta! Šī lapa ir tikai administratoriem.", 403
+    
+    db = dabut_db()
+    viss_izsniegtais = db.execute("""
+        SELECT 
+            lietotaji.lietotajvards, 
+            inventars.nosaukums, 
+            inventars.veids, 
+            izsniegtais.datums_izsniegts 
+        FROM izsniegtais
+        JOIN lietotaji ON izsniegtais.lietotajs_ID = lietotaji.ID
+        JOIN inventars ON izsniegtais.inventars_ID = inventars.ID
+        ORDER BY izsniegtais.datums_izsniegts DESC
+    """).fetchall()
+    db.close()
+    
+    return render_template('izsniegtais_inventars.html', saraksts=viss_izsniegtais)
 
 if __name__ == "__main__":
     app.run(debug=True)

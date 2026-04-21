@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Dzēst</h1>
+    <form action="/inventars" method="GET" style="display: flex; gap: 0.5rem;">
+        <input type="text" name="nosaukums" placeholder="Meklēt..." style="padding: 0.5rem; border-radius: 8px; border: 1px solid #CBD5E1;">
+        <button type="submit" class="btn">Meklēt</button>
+    </form>
+</div>
+
+<div class="card" style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--bg); text-align: left;">
+                <th style="padding: 1rem;">Veids</th>
+                <th style="padding: 1rem;">Nosaukums</th>
+                <th style="padding: 1rem;">Kopā</th>
+                <th style="padding: 1rem;">Pieejams</th>
+                <th style="padding: 1rem;">Darbība</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in inventars %}
+            <tr style="border-bottom: 1px solid var(--bg);">
+                <td style="padding: 1rem;">{{ i['veids'] }}</td>
+                <td style="padding: 1rem;"><strong>{{ i['nosaukums'] }}</strong></td>
+                <td style="padding: 1rem;">{{ i['kopejais_skaits'] }}</td>
+                <td style="padding: 1rem;">
+                    <span style="color: {{ 'var(--success)' if i['pieejamais_skaits'] > 0 else 'var(--secondary)' }}">
+                        {{ i['pieejamais_skaits'] }}
+                    </span>
+                </td>
+                    <td style="padding: 1rem;">
+                        {% if session.get('loma') == 'admin' %}
+                        {% if i['pieejamais_skaits'] > 0 %}
+                        <a href="{{ url_for('dzest', id=i['ID']) }}" class="btn" style="background-color: #EF4444; padding: 0.4rem 0.8rem;">Dzēst</a>
+                        {% else %}
+                    <span style="font-size: 0.8rem; color: #94A3B8;">Nav pieejams</span>
+                    {% endif %}
+                    {% endif %}
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

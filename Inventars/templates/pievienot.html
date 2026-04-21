@@ -6,7 +6,9 @@
         <form action="/pievienot" method="POST">
             <div style="margin-bottom: 1rem;">
                 <label>Veids</label>
-                <input type="text" name="veids" placeholder="Piemēram: Dators" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" required>
+                <select type="text" name="veids" placeholder="Piemēram: Dators" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" required>
+                    <option value="Elektronika" selected>Elektronika</option>
+                    <option value="Gramata" selected>Grāmata</option>
             </div>
             <div style="margin-bottom: 1rem;">
                 <label>Nosaukums</label>
@@ -14,12 +16,13 @@
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
                 <div>
+
                     <label>Kopējais skaits</label>
-                    <input type="number" name="kopejais_skaits" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" required>
+                    <input type="number" name="kopejais_skaits" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" min="1"; step="1" required>
                 </div>
                 <div>
                     <label>Pieejamais skaits</label>
-                    <input type="number" name="pieejamais_skaits" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;" required>
+                    <input type="number" name="pieejamais_skaits" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #CBD5E1;"; min="0" step="1" required>
                 </div>
             </div>
             <button type="submit" class="btn">Saglabāt datubāzē</button>
