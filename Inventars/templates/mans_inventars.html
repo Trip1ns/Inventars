@@ -12,10 +12,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for ieraksts in saraksts %}
+            {% for i in saraksts %}
             <tr style="border-bottom: 1px solid var(--bg);">
-                <td style="padding: 1rem;">{{ ieraksts['nosaukums'] }}</td>
-                <td style="padding: 1rem;">{{ ieraksts['datums_izsniegts'] }}</td>
+                <td style="padding: 1rem;">{{ i['nosaukums'] }}</td>
+                <td style="padding: 1rem;">{{ i['datums_izsniegts'] }}</td>
             </tr>
             {% endfor %}
         </tbody>

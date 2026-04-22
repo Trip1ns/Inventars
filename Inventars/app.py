@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 app = Flask(__name__)
-app.secret_key = "loti_slepeni_123"
+app.secret_key = "projekts_inventars"
 
 def dabut_db():
     conn = sqlite3.connect('projekts.db')
@@ -185,7 +185,6 @@ def dzest_saraksts():
     db = dabut_db()
     visi_dati = db.execute("SELECT * FROM inventars").fetchall()
     db.close()
-    # Nododam datus uz dzest.html
     return render_template('dzest.html', inventars=visi_dati)
 
 @app.route('/dzest/<int:id>')

@@ -16,7 +16,9 @@
                 <th style="padding: 1rem;">Nosaukums</th>
                 <th style="padding: 1rem;">Kopā</th>
                 <th style="padding: 1rem;">Pieejams</th>
+                {% if session.get('loma') == 'klients' %}
                 <th style="padding: 1rem;">Darbība</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
