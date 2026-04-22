@@ -7,18 +7,18 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "projekts_inventars"
 
-def dabut_db():
+def dabut_db(): #Palīgfunkcija, lai savienotos ar datubāzi.
     conn = sqlite3.connect('projekts.db')
     conn.row_factory = sqlite3.Row
     return conn
 
-@app.route('/')
+@app.route('/') #sākumlapa
 def base():
     if 'lietotajs_id' in session:
         return redirect(url_for('inventars'))
     return redirect(url_for('pieteiksanas'))
 
-@app.route('/pieteiksanas', methods=['GET', 'POST'])
+@app.route('/pieteiksanas', methods=['GET', 'POST']) #Pieteikšanās lapa.
 def pieteiksanas():
     if request.method == 'POST':
         lietotajvards = request.form.get('lietotajs')
@@ -38,7 +38,7 @@ def pieteiksanas():
     
     return render_template("pieteiksanas.html")
 
-@app.route('/registreties', methods=['GET', 'POST'])
+@app.route('/registreties', methods=['GET', 'POST']) #Reģistrēšanās lapa.
 def registreties():
     if request.method == 'POST':
         lietotajs = request.form.get('lietotajs')
@@ -54,7 +54,7 @@ def registreties():
         return redirect(url_for('pieteiksanas'))
     return render_template("registreties.html") 
 
-@app.route("/inventars")
+@app.route("/inventars") #Visa inventāra saraksts.
 def inventars():
     if 'lietotajs_id' not in session:
         return redirect(url_for('pieteiksanas'))
@@ -70,7 +70,7 @@ def inventars():
     db.close()
     return render_template("inventars.html", inventars = atbilde)
 
-@app.route('/pievienot', methods=['GET', 'POST'])
+@app.route('/pievienot', methods=['GET', 'POST']) #Admin pievieno inventāru kopējam inventāra sarakstam.
 def pievienot():
     if session.get('loma') != 'admin':
         return "Piekļuve liegta!"
@@ -102,13 +102,13 @@ def pievienot():
     
     return render_template('pievienot.html')
 
-@app.route('/atslegties')
+@app.route('/atslegties') #Lietotājs atslēdzas no sistēmas.
 def atslegties():
     session.clear()
     return redirect(url_for('pieteiksanas'))
 
 
-@app.route('/rezervet/<int:id>')
+@app.route('/rezervet/<int:id>') #Klients rezervē inventāru.
 def rezervet(id):
     if 'lietotajs_id' not in session:
         return redirect(url_for('pieteiksanas'))
@@ -128,7 +128,7 @@ def rezervet(id):
     db.close()
     return redirect(url_for('inventars'))
 
-@app.route('/mans_inventars')
+@app.route('/mans_inventars') #Klients redz savu paņemto inventāru.
 def mans_inventars():
     if 'lietotajs_id' not in session:
         return redirect(url_for('pieteiksanas'))
@@ -144,7 +144,7 @@ def mans_inventars():
     db.close()
     return render_template('mans_inventars.html', saraksts=mans_saraksts)
 
-@app.route('/atdot_inventaru')
+@app.route('/atdot_inventaru') #Klients redz savu paņemoto inventāru.
 def atdot_inventaru():
     if 'lietotajs_id' not in session:
         return redirect(url_for('pieteiksanas'))
@@ -160,7 +160,7 @@ def atdot_inventaru():
     db.close()
     return render_template('atdot.html', saraksts=mans_saraksts)
 
-@app.route('/izpildit_atdosanu/<int:ieraksta_id>')
+@app.route('/izpildit_atdosanu/<int:ieraksta_id>') #Klients nospiežot pogu "atdot" atdot paņemto inventāru.
 def izpildit_atdosanu(ieraksta_id):
     if 'lietotajs_id' not in session:
         return redirect(url_for('pieteiksanas'))
@@ -177,7 +177,7 @@ def izpildit_atdosanu(ieraksta_id):
     db.close()
     return redirect(url_for('atdot_inventaru'))    
 
-@app.route('/dzest_saraksts')
+@app.route('/dzest_saraksts') #Admin izdzēš inventāru no inventāra saraksta.
 def dzest_saraksts():
     if session.get('loma') != 'admin':
         return "Piekļuve liegta!"
@@ -187,7 +187,7 @@ def dzest_saraksts():
     db.close()
     return render_template('dzest.html', inventars=visi_dati)
 
-@app.route('/dzest/<int:id>')
+@app.route('/dzest/<int:id>') #pogas "dzēst" funkcionalitāte
 def dzest(id):
     if session.get('loma') != 'admin':
         return "Piekļuve liegta!"
@@ -199,7 +199,7 @@ def dzest(id):
     
     return redirect(url_for('dzest_saraksts'))
 
-@app.route('/izsniegtais_inventars')
+@app.route('/izsniegtais_inventars') #Admin redz klientus, kuriem ir izsniegts inventārs.
 def izsniegtais_inventars():
     if session.get('loma') != 'admin':
         return "Piekļuve liegta! Šī lapa ir tikai administratoriem.", 403
