@@ -19,6 +19,8 @@
             --text: #475569;        /* Pamatteksta krāsa */
             --bg: #F8FAFC;          /* Fona krāsa */
             --white: #FFFFFF;
+            --error-bg: #FEE2E2;    /* Kļūdu fons */
+            --error-text: #B91C1C;  /* Kļūdu teksts */
         }
 
         * {
@@ -28,19 +30,18 @@
         }
 
         body {
-            font-family: 'Roboto', sans-serif; /* Pamatteksta fonts */
+            font-family: 'Roboto', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             line-height: 1.6;
         }
 
         h1, h2, h3, .nav-logo {
-            font-family: 'Inter', sans-serif; /* Virsrakstu fonts */
+            font-family: 'Inter', sans-serif;
             color: var(--title);
             font-weight: 700;
         }
 
-        /* Navigācijas josla */
         nav {
             background-color: var(--white);
             padding: 1rem 2rem;
@@ -78,14 +79,28 @@
             color: var(--primary);
         }
 
-        /* Galvenais satura konteiners */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
-        /* Pogas stils */
+        /* Flash ziņojumu stils */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid #FECACA;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            list-style: none;
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -93,7 +108,7 @@
             background-color: var(--primary);
             color: var(--white);
             padding: 0.6rem 1.2rem;
-            border-radius: 8px; /* Noapaļoti stūri modernam vibe */
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
             border: none;
@@ -105,7 +120,6 @@
             opacity: 0.9;
         }
 
-        /* Kartiņu stils (inventāram) */
         .card {
             background: var(--white);
             border-radius: 12px;
@@ -123,29 +137,42 @@
             Inventārs
         </a>
         <ul class="nav-links">
-            {% if session.get('lietotajs_id') %} <li><a href="/inventars">Inventārs</a></li>
+            {% if session.get('lietotajs_id') %} 
+                <li><a href="/inventars">Inventārs</a></li>
                 {% if session.get('loma') == 'admin' %}
                     <li><a href="/pievienot">Pievienot</a></li>
                     <li><a href="/izsniegtais_inventars">Izsniegtais inventārs</a></li>
                     <li><a href="/dzest_saraksts">Dzēst inventāru</a></li>
                 {% endif %}
                 {% if session.get('loma') == 'klients' %}
-                <li><a href="/mans_inventars">Mans Inventārs</a></li>
-                <li><a href="/atdot_inventaru">Atdot inventāru</a></li>
+                    <li><a href="/mans_inventars">Mans Inventārs</a></li>
+                    <li><a href="/atdot_inventaru">Atdot inventāru</a></li>
                 {% endif %}
                 <li><a href="/atslegties">Atslēgties ({{ session.get('lietotajvards') }})</a></li>
-        {% else %}
-            <li><a href="/registreties">Reģistrēties</a></li>
-            <li><a href="/pieteiksanas">Autorizēties</a></li>
-    {% endif %}
-</ul>
+            {% else %}
+                <li><a href="/registreties">Reģistrēties</a></li>
+                <li><a href="/pieteiksanas">Autorizēties</a></li>
+            {% endif %}
+        </ul>
     </nav>
 
     <div class="container">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </div>
 
     <script>
+        // Inicializē Lucide ikonas
+        lucide.createIcons();
     </script>
 </body>
 </html>
