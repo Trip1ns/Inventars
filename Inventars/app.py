@@ -43,16 +43,27 @@ def registreties():
     if request.method == 'POST':
         lietotajs = request.form.get('lietotajs')
         parole = request.form.get('parole')
+        
+        db = dabut_db()
+        esoss_lietotajs = db.execute("SELECT * FROM lietotaji WHERE lietotajvards = ?", (lietotajs,)).fetchone()
+        
+        if esoss_lietotajs:
+            db.close()
+            flash(f"{lietotajs} jau ir aizņemts lietotājvārds!")
+            return redirect(url_for('registreties'))
+
         parole_hash = generate_password_hash(parole)
         loma = 'klients' 
 
-        db = dabut_db() 
         db.execute("INSERT INTO lietotaji (lietotajvards, parole, loma) VALUES (?, ?, ?)", 
                    (lietotajs, parole_hash, loma))
         db.commit()
         db.close()
+        
+        flash("Reģistrācija veiksmīga!")
         return redirect(url_for('pieteiksanas'))
-    return render_template("registreties.html") 
+        
+    return render_template("registreties.html")
 
 @app.route("/inventars") #Visa inventāra saraksts.
 def inventars():
