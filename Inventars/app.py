@@ -34,7 +34,7 @@ def pieteiksanas():
             session['loma'] = lietotajs['loma']
             return redirect(url_for('inventars'))
         
-        return "Nepareizi dati!"
+        flash("Nepareizi dati!") 
     
     return render_template("pieteiksanas.html")
 
