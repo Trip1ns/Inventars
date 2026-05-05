@@ -18,7 +18,7 @@ def base():
         return redirect(url_for('inventars'))
     return redirect(url_for('pieteiksanas'))
 
-@app.route('/pieteiksanas', methods=['GET', 'POST']) #Pieteikšanās lapa.
+@app.route('/pieteiksanas', methods=['GET', 'POST'])#Pieteikšanās lapa.
 def pieteiksanas():
     if request.method == 'POST':
         lietotajvards = request.form.get('lietotajs')
@@ -34,35 +34,26 @@ def pieteiksanas():
             session['loma'] = lietotajs['loma']
             return redirect(url_for('inventars'))
         
-        flash("Nepareizi dati!") 
+        flash("Nepareizi dati!", "error") 
     
     return render_template("pieteiksanas.html")
 
-@app.route('/registreties', methods=['GET', 'POST']) #Reģistrēšanās lapa.
+@app.route('/registreties', methods=['GET', 'POST'])#Reģistrēšanās lapa.
 def registreties():
     if request.method == 'POST':
         lietotajs = request.form.get('lietotajs')
         parole = request.form.get('parole')
-        
-        db = dabut_db()
-        esoss_lietotajs = db.execute("SELECT * FROM lietotaji WHERE lietotajvards = ?", (lietotajs,)).fetchone()
-        
-        if esoss_lietotajs:
-            db.close()
-            flash(f"{lietotajs} jau ir aizņemts lietotājvārds!")
-            return redirect(url_for('registreties'))
-
         parole_hash = generate_password_hash(parole)
         loma = 'klients' 
 
+        db = dabut_db() 
         db.execute("INSERT INTO lietotaji (lietotajvards, parole, loma) VALUES (?, ?, ?)", 
                    (lietotajs, parole_hash, loma))
         db.commit()
         db.close()
         
-        flash("Reģistrācija veiksmīga!")
+        flash("Konts ir veiksmīgi izveidots!", "success")
         return redirect(url_for('pieteiksanas'))
-        
     return render_template("registreties.html")
 
 @app.route("/inventars") #Visa inventāra saraksts.

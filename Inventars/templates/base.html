@@ -13,33 +13,26 @@
 
     <style>
         :root {
-            --primary: #2563EB;     /* Galvenā krāsa */
-            --secondary: #64748B;   /* Akcenta krāsa */
-            --title: #1E293B;       /* Virsrakstu krāsa */
-            --text: #475569;        /* Pamatteksta krāsa */
-            --bg: #F8FAFC;          /* Fona krāsa */
+            --primary: #2563EB;
+            --secondary: #64748B;
+            --title: #1E293B;
+            --text: #475569;
+            --bg: #F8FAFC;
             --white: #FFFFFF;
-            --error-bg: #FEE2E2;    /* Kļūdu fons */
-            --error-text: #B91C1C;  /* Kļūdu teksts */
+            /* Krāsas paziņojumiem */
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --success-bg: #DCFCE7;
+            --success-text: #15803D;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Roboto', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             line-height: 1.6;
-        }
-
-        h1, h2, h3, .nav-logo {
-            font-family: 'Inter', sans-serif;
-            color: var(--title);
-            font-weight: 700;
         }
 
         nav {
@@ -55,6 +48,9 @@
         }
 
         .nav-logo {
+            font-family: 'Inter', sans-serif;
+            color: var(--title);
+            font-weight: 700;
             font-size: 1.25rem;
             display: flex;
             align-items: center;
@@ -62,22 +58,8 @@
             text-decoration: none;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--secondary);
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
+        .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--secondary); font-weight: 500; }
 
         .container {
             max-width: 1200px;
@@ -85,26 +67,38 @@
             padding: 0 1rem;
         }
 
-        /* Flash ziņojumu stils */
-        .flash-messages {
-            margin-bottom: 1.5rem;
-        }
-
+        /* Dinamiskie Flash stili */
+        .flash-messages { margin-bottom: 1.5rem; }
+        
         .alert {
             padding: 1rem;
-            background-color: var(--error-bg);
-            color: var(--error-text);
-            border: 1px solid #FECACA;
             border-radius: 8px;
             text-align: center;
             font-weight: 600;
-            list-style: none;
+            margin-bottom: 0.5rem;
+            border: 1px solid transparent;
+        }
+
+        .alert-error, .alert-danger {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border-color: #FECACA;
+        }
+
+        .alert-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border-color: #BBF7D0;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
             background-color: var(--primary);
             color: var(--white);
             padding: 0.6rem 1.2rem;
@@ -113,42 +107,21 @@
             font-weight: 600;
             border: none;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="/" class="nav-logo">
-            <i data-lucide="package"></i>
-            Inventārs
-        </a>
+        <a href="/" class="nav-logo"><i data-lucide="package"></i> Inventārs</a>
         <ul class="nav-links">
-            {% if session.get('lietotajs_id') %} 
+            {% if session.get('lietotajs_id') %}
                 <li><a href="/inventars">Inventārs</a></li>
                 {% if session.get('loma') == 'admin' %}
                     <li><a href="/pievienot">Pievienot</a></li>
-                    <li><a href="/izsniegtais_inventars">Izsniegtais inventārs</a></li>
-                    <li><a href="/dzest_saraksts">Dzēst inventāru</a></li>
+                    <li><a href="/izsniegtais_inventars">Izsniegtais</a></li>
                 {% endif %}
-                {% if session.get('loma') == 'klients' %}
-                    <li><a href="/mans_inventars">Mans Inventārs</a></li>
-                    <li><a href="/atdot_inventaru">Atdot inventāru</a></li>
-                {% endif %}
-                <li><a href="/atslegties">Atslēgties ({{ session.get('lietotajvards') }})</a></li>
+                <li><a href="/atslegties">Atslēgties</a></li>
             {% else %}
                 <li><a href="/registreties">Reģistrēties</a></li>
                 <li><a href="/pieteiksanas">Autorizēties</a></li>
@@ -157,11 +130,11 @@
     </nav>
 
     <div class="container">
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             <div class="flash-messages">
-              {% for message in messages %}
-                <div class="alert">{{ message }}</div>
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
               {% endfor %}
             </div>
           {% endif %}
@@ -170,9 +143,6 @@
         {% block content %}{% endblock %}
     </div>
 
-    <script>
-        // Inicializē Lucide ikonas
-        lucide.createIcons();
-    </script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
